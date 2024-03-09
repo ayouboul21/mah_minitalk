@@ -22,31 +22,30 @@ PRINTF_LIB = $(PRINTF_DIR)/libftprintf.a
 %_bonus.o: %_bonus.c minitalk_bonus.h
 	@$(CC) $(CFLAGS) -c -o $@ $<
 
-MAKE: ${NAME_S} ${NAME_C}
+first: pre ${NAME_S} ${NAME_C}
 
 ${NAME_S}: ${OBJ_S} $(PRINTF_LIB)
-		@echo "Linking with Ftprintf..."
+		@echo "Linking server with Ftprintf..."
 		@$(CC) $(CFLAGS) -o $@ $^
-		@echo "Finished"
 
 ${NAME_C}: ${OBJ_C} $(PRINTF_LIB)
-		@echo "Linking with Ftprintf..."
+		@echo "Linking client with Ftprintf..."
 		@$(CC) $(CFLAGS) -o $@ $^
 		@echo "Finished"
 
 ${NAME_SERVER_BONUS}: ${OBJS_S_BONUS} $(PRINTF_LIB)
 		@echo "Compiling Bonus..."
-		@echo "Preparing the server..."
+		@echo "Linking server with Ftprintf..."
 		@$(CC) $(CFLAGS) -o $@ $^
 
 ${NAME_CLIENT_BONUS}: ${OBJS_C_BONUS} $(PRINTF_LIB)
-		@echo "Preparing the client..."
+		@echo "Linking client with Ftprintf..."
 		@$(CC) $(CFLAGS) -o $@ $^
 		@echo "Finished"
 
-$(PRINTF_LIB):
+pre:
 	@echo "Building Ftprintf..."
-	@$(MAKE) -C $(PRINTF_DIR)
+	@cd $(PRINTF_DIR) && make
 	@echo "Done"
 
 all: ${NAME_S} ${NAME_C}
@@ -63,6 +62,6 @@ fclean: clean
 
 re: fclean all
 
-bonus: ${NAME_SERVER_BONUS} ${NAME_CLIENT_BONUS}
+bonus: pre ${NAME_SERVER_BONUS} ${NAME_CLIENT_BONUS}
 
 .PHONY: clean
